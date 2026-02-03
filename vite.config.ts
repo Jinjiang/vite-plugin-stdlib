@@ -10,4 +10,7 @@ export default defineConfig({
     react(),
     stdlib(),
   ],
+  build: {
+    minify: false,
+  },
 })

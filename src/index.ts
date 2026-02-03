@@ -5,15 +5,21 @@ import stdLibBrowser from 'node-stdlib-browser'
 
 const require = createRequire(import.meta.url)
 
-export const inject: Record<string, string> = {
-  buffer: require.resolve('vite-plugin-node-polyfills/shims/buffer'),
+export const rolldownInject: Record<string, string> = {
+  Buffer: require.resolve('vite-plugin-node-polyfills/shims/buffer'),
   global: require.resolve('vite-plugin-node-polyfills/shims/global'),
   process: require.resolve('vite-plugin-node-polyfills/shims/process'),
 }
 
+function getModuleName(name: string) {
+  const unprefixed = name.replace(/^node:/, '')
+  if (unprefixed === 'buffer') return 'Buffer'
+  return unprefixed
+}
+
 export const alias = Object.entries(stdLibBrowser).reduce(
   (map, [name, value]) => {
-    map[name] = inject[name.replace(/^node:/, '')] || value
+    map[name] = rolldownInject[getModuleName(name)] || value
     return map
   }, {} as Record<string, string>
 )
@@ -30,7 +36,7 @@ export const oxcInject: Record<string, [string, string]> = {
   process: ['vite-plugin-node-polyfills/shims/process', 'default']
 }
 
-const banner = [
+export const banner = [
   `import __buffer_polyfill from 'vite-plugin-node-polyfills/shims/buffer'`,
   `import __global_polyfill from 'vite-plugin-node-polyfills/shims/global'`,
   `import __process_polyfill from 'vite-plugin-node-polyfills/shims/process'`,
@@ -42,31 +48,29 @@ const banner = [
 
 export const stdlib = (): Plugin => {
   return {
-    name: 'vite-plugin-node-polyfills',
-    config(_config, env) {
-      const isDev = env.command === 'serve'
-
+    name: 'vite-plugin-stdlib',
+    config() {
       return {
         resolve: { alias },
         oxc: {
           inject: oxcInject,
         },
         optimizeDeps: {
-          include: Object.values(inject),
+          include: Object.values(oxcInject).map(([moduleName]) => moduleName),
           rolldownOptions: {
             resolve: { alias },
             transform: { define },
             plugins: [
               {
-                name: 'vite-plugin-node-polyfills:optimizer',
-                banner: isDev ? banner : undefined,
+                name: 'vite-plugin-stdlib:optimizer',
+                banner,
               },
             ],
           },
         },
         build: {
           rolldownOptions: {
-            transform: { inject },
+            transform: { inject: rolldownInject },
           },
         },
       }

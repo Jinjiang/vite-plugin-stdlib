@@ -23,7 +23,10 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite",
+    "dev": "rm -rf node_modules/.vite && vite",
+    "demo:serve": "vite",
+    "demo:build": "vite build",
+    "demo:preview": "vite build && vite preview",
     "build": "tsc -b tsconfig.src.json",
     "watch": "tsc -b --watch tsconfig.src.json",
     "type-check": "tsc --noEmit",
