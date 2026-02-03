@@ -6,9 +6,9 @@ import stdLibBrowser from 'node-stdlib-browser'
 const require = createRequire(import.meta.url)
 
 export const rolldownInject: Record<string, string> = {
-  Buffer: require.resolve('vite-plugin-node-polyfills/shims/buffer'),
-  global: require.resolve('vite-plugin-node-polyfills/shims/global'),
-  process: require.resolve('vite-plugin-node-polyfills/shims/process'),
+  Buffer: require.resolve('vite-plugin-node/buffer'),
+  global: require.resolve('vite-plugin-node/global'),
+  process: require.resolve('vite-plugin-node/process'),
 }
 
 function getModuleName(name: string) {
@@ -31,15 +31,15 @@ export const define = {
 }
 
 export const oxcInject: Record<string, [string, string]> = {
-  Buffer: ['vite-plugin-node-polyfills/shims/buffer', 'default'],
-  global: ['vite-plugin-node-polyfills/shims/global', 'default'],
-  process: ['vite-plugin-node-polyfills/shims/process', 'default']
+  Buffer: ['vite-plugin-node/buffer', 'default'],
+  global: ['vite-plugin-node/global', 'default'],
+  process: ['vite-plugin-node/process', 'default']
 }
 
 export const banner = [
-  `import __buffer_polyfill from 'vite-plugin-node-polyfills/shims/buffer'`,
-  `import __global_polyfill from 'vite-plugin-node-polyfills/shims/global'`,
-  `import __process_polyfill from 'vite-plugin-node-polyfills/shims/process'`,
+  `import __buffer_polyfill from 'vite-plugin-node/buffer'`,
+  `import __global_polyfill from 'vite-plugin-node/global'`,
+  `import __process_polyfill from 'vite-plugin-node/process'`,
   `globalThis.Buffer = globalThis.Buffer || __buffer_polyfill`,
   `globalThis.global = globalThis.global || __global_polyfill`,
   `globalThis.process = globalThis.process || __process_polyfill`,
@@ -48,7 +48,7 @@ export const banner = [
 
 export const stdlib = (): Plugin => {
   return {
-    name: 'vite-plugin-stdlib',
+    name: 'vite-plugin-node',
     config() {
       return {
         resolve: { alias },
@@ -62,7 +62,7 @@ export const stdlib = (): Plugin => {
             transform: { define },
             plugins: [
               {
-                name: 'vite-plugin-stdlib:optimizer',
+                name: 'vite-plugin-node:optimizer',
                 banner,
               },
             ],

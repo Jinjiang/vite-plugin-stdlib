@@ -1,5 +1,5 @@
 {
-  "name": "vite-plugin-node-stdlib",
+  "name": "vite-plugin-node",
   "version": "0.0.0",
   "description": "A Vite plugin to polyfill Node.js standard library modules for browser usage.",
   "keywords": [
@@ -16,7 +16,23 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    },
+    "./buffer": {
+      "types": "./dist/buffer/index.d.ts",
+      "import": "./dist/buffer/index.js",
+      "require": "./dist/buffer/index.js"
+    },
+    "./process": {
+      "types": "./dist/process/index.d.ts",
+      "import": "./dist/process/index.js",
+      "require": "./dist/process/index.js"
+    },
+    "./global": {
+      "types": "./dist/global/index.d.ts",
+      "import": "./dist/global/index.js",
+      "require": "./dist/global/index.js"
     }
   },
   "files": [
